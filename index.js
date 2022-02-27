@@ -35,7 +35,7 @@ app.post('/screenshot', async (req, res) => {
                 'Content-Length': img.length
             });
             res.end(img); 
-            fs.writeFileSync(`${require('md5')(htmlRequest)}.png`, image, 'base64');
+            //fs.writeFileSync(`history/${require('md5')(htmlRequest)}.png`, image, 'base64');
         });
     } finally {
         await driver.quit();
