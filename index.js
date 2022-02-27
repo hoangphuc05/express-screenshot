@@ -18,7 +18,7 @@ app.use(cors());
 
 function verifyGoogleRecaptcha(captchaToken) {
     return new Promise((resolve, reject) => {
-        const url = 'https://www.google.com/recaptcha/api/siteverify';
+        const url = 'https://www.google.com/recaptcha/api/siteverify?secret=' + process.env.RECAPTCHA_SECRET + '&response=' + captchaToken;
         const data = {
             secret: process.env.RECAPTCHA_SECRET,
             response: captchaToken
@@ -26,7 +26,6 @@ function verifyGoogleRecaptcha(captchaToken) {
         axios({
             method: 'POST',
             url: url,
-            data: data
         }).then(res => res.data)
         .then(res => {
             console.log(res);
