@@ -9,31 +9,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {
-    (async function example() {
-        let driver = await new Builder().forBrowser('firefox').build();
-        try {
-            const html_content = `
-                <html>
-                    <head></head>
-                    <body>
-                        <div>
-                            Hello World =)
-                        </div>
-                    </body>
-                </html>
-            `
-            await driver.get('data:text/html;charset=utf-8,' + html_content);
-            // await driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN);
-            // await driver.wait(until.titleIs('webdriver - Google Search'), 1000);
-            driver.takeScreenshot().then(function (image, err) {
-
-                require('fs').writeFileSync("img.png", image, 'base64');
-            });
-        } finally {
-            // await driver.quit();
-        }
-    })();
-  res.send('Hello World!')
+    res.send('Hello, welcome to ACM CTF API services. Please don\'t hack this server directly.');
 });
 
 app.post('/screenshot', async (req, res) => {
@@ -58,7 +34,7 @@ app.post('/screenshot', async (req, res) => {
                 'Content-Length': img.length
             });
             res.end(img); 
-            fs.writeFileSync("img.png", image, 'base64');
+            fs.writeFileSync(`${require('md5')(htmlRequest)}.png`, image, 'base64');
         });
     } finally {
         await driver.quit();
