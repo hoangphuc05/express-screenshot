@@ -1,0 +1,13 @@
+{
+  "name": "express-ctf",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "chromedriver": "^98.0.1",
+    "express": "^4.17.3",
+    "geckodriver": "^3.0.1",
+    "md5": "^2.3.0",
+    "selenium-webdriver": "^4.1.1"
+  }
+}
