@@ -3,6 +3,7 @@ const fs = require('fs');
 const app = express()
 const port = 3000
 const {Builder, By, Key, until} = require('selenium-webdriver');
+const firefox = require('selenium-webdriver/firefox');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -21,7 +22,7 @@ app.post('/screenshot', async (req, res) => {
     }
     fs.writeFileSync(`public/${require('md5')(htmlRequest)}.html`, htmlRequest, 'utf8');
     // res.send('Hello World!');
-    let driver = await new Builder().forBrowser('firefox').build();
+    let driver = await new Builder().forBrowser('firefox').setFirefoxOptions(new firefox.Options().addArguments('--headless')).build();
     try {
         
         await driver.get(`localhost:3000/${require('md5')(htmlRequest)}.html`);
