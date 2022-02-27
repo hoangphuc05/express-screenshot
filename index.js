@@ -52,19 +52,23 @@ app.post('/screenshot', async (req, res) => {
         return;
     }
 
-    let captchResult = await verifyGoogleRecaptcha(gCaptcha);
+    // let captchResult = await verifyGoogleRecaptcha(gCaptcha);
 
-    if (!captchResult) {
-        res.send("Invalid captcha");
-        return;
-    }
+    // if (!captchResult) {
+    //     res.send("Invalid captcha");
+    //     return;
+    // }
+    
+    //military grade purification
+    htmlRequest = htmlRequest.replace("script", "code");
+
     fs.writeFileSync(`public/${require('md5')(htmlRequest)}.html`, htmlRequest, 'utf8');
     
     let driver = await new Builder().forBrowser('firefox').setFirefoxOptions(new firefox.Options().addArguments('--headless')).build();
     try {
         
         await driver.get(`localhost:3000/${require('md5')(htmlRequest)}.html`);
-        await driver.manage().addCookie({name:'session', value:'123'});
+        await driver.manage().addCookie({name:'flag', value:process.env.FLAG});
         await driver.get(`localhost:3000/${require('md5')(htmlRequest)}.html`);
         driver.takeScreenshot().then(function (image, err) {
             const img = Buffer.from(image, 'base64');
