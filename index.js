@@ -61,6 +61,11 @@ app.post('/screenshot', async (req, res) => {
     
     //military grade purification
     htmlRequest = htmlRequest.replace("script", "code");
+    htmlRequest = htmlRequest.replace("embed", "code");
+    htmlRequest = htmlRequest.replace("iframe", "code");
+    htmlRequest = htmlRequest.replace("frame", "code");
+    htmlRequest = htmlRequest.replace("object", "code");
+    
 
     fs.writeFileSync(`public/${require('md5')(htmlRequest)}.html`, htmlRequest, 'utf8');
     
