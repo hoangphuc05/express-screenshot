@@ -3,6 +3,7 @@ const fs = require('fs');
 var cors = require('cors')
 require('dotenv').config()
 const axios = require('axios');
+const {v4: uuidv4} = require('uuid');
 
 const app = express()
 const port = 3000
@@ -44,8 +45,9 @@ app.get('/', (req, res) => {
 });
 
 app.post('/screenshot', async (req, res) => {
-    console.log(req.body.html);
+    
     let htmlRequest = req.body.html|| "";
+    let htmlName = `${require('md5')(htmlRequest)}-${uuidv4()}.html`;
     let gCaptcha = req.body['gcaptcha']||"";
     if (htmlRequest.length <= 0) {
         res.send("No html content");
@@ -67,14 +69,14 @@ app.post('/screenshot', async (req, res) => {
     htmlRequest = htmlRequest.replace("object", "code");
     
 
-    fs.writeFileSync(`public/${require('md5')(htmlRequest)}.html`, htmlRequest, 'utf8');
+    fs.writeFileSync(`public/${htmlName}`, htmlRequest, 'utf8');
     
     let driver = await new Builder().forBrowser('firefox').setFirefoxOptions(new firefox.Options().addArguments('--headless')).build();
     try {
         
-        await driver.get(`localhost:3000/${require('md5')(htmlRequest)}.html`);
+        await driver.get(`localhost:3000/${htmlName}`);
         await driver.manage().addCookie({name:'flag', value:process.env.FLAG});
-        await driver.get(`localhost:3000/${require('md5')(htmlRequest)}.html`);
+        await driver.get(`localhost:3000/${htmlName}`);
         driver.takeScreenshot().then(function (image, err) {
             const img = Buffer.from(image, 'base64');
             res.writeHead(200, {
@@ -86,7 +88,7 @@ app.post('/screenshot', async (req, res) => {
         });
     } finally {
         await driver.quit();
-        fs.unlinkSync(`public/${require('md5')(htmlRequest)}.html`);
+        fs.unlinkSync(`public/${htmlName}`);
     }
 });
 
